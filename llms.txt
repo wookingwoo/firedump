@@ -1,0 +1,70 @@
+Project: FireDump
+
+Summary:
+FireDump is a Next.js 15 app that exports a Firestore collection path to a downloadable JSON file. It is intended to run on Vercel and uses firebase-admin on the server only.
+
+Stack:
+- Next.js 15
+- React 19
+- TypeScript
+- firebase-admin
+
+Primary behavior:
+- The landing page renders a marketing shell plus a backup form.
+- Users provide:
+  - Firebase project ID
+  - Firestore collection path
+  - Firebase service account JSON
+- The server validates the request, initializes firebase-admin, exports the target collection, includes nested subcollections, and returns a JSON file download.
+- Credentials are processed in memory for the request and are not persisted by the app layer.
+
+Important routes and files:
+- app/page.tsx: landing page and primary UI entry.
+- components/backup-form.tsx: client form that submits backup requests.
+- app/api/backup/route.ts: POST endpoint for export requests.
+- lib/firestore-export.ts: Firestore export logic and value serialization.
+- app/layout.tsx: app shell metadata and layout.
+- app/globals.css: global styling.
+
+API contract:
+- POST /api/backup
+- JSON body fields:
+  - projectId: string, required
+  - collectionPath: string, required
+  - serviceAccountJson: string, required, must parse as a service account object
+- Success response:
+  - Content-Type: application/json
+  - Content-Disposition: attachment filename based on collection path and current date
+- Error responses:
+  - 400 for missing or invalid input
+  - 500 for export failures
+
+Export shape:
+- exportedAt: ISO timestamp
+- projectId: string
+- collectionPath: string
+- documentCount: number
+- documents: array of exported documents
+
+Exported document shape:
+- id: document ID
+- path: full Firestore document path
+- data: serialized document data
+- exists: optional false when the document snapshot does not exist
+- subcollections: optional map of subcollection name to exported documents
+
+Serialization notes:
+- Firestore Timestamp values are converted to ISO strings.
+- Arrays and nested objects are serialized recursively.
+- Null and undefined become null.
+
+Local development:
+- Install: npm install
+- Dev server: npm run dev
+- Build: npm run build
+- Lint: npm run lint
+
+Operational constraints:
+- The backup route requires the Node.js runtime.
+- Firestore access depends on a valid service account with permission to read the target collection path.
+- The current implementation exports a collection path, including nested subcollections beneath each returned document.
