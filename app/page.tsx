@@ -1,4 +1,5 @@
 import { BackupForm } from "@/components/backup-form";
+import { FireDumpLogo } from "@/components/firedump-logo";
 
 const githubRepositoryUrl = "https://github.com/wookingwoo/firedump";
 
@@ -26,6 +27,10 @@ const steps = [
 export default function Home() {
   return (
     <main className="shell">
+      <header className="brand-bar">
+        <FireDumpLogo />
+      </header>
+
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Firestore backup, minus the scripting</p>
