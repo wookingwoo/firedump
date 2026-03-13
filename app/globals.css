@@ -147,6 +147,40 @@ input[type="file"] {
   font-size: 1.4rem;
 }
 
+.github-callout {
+  margin-top: 4px;
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(35, 24, 11, 0.08);
+  background: linear-gradient(135deg, rgba(211, 74, 36, 0.08), rgba(255, 255, 255, 0.84));
+}
+
+.github-callout h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.15rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.github-callout p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.github-link,
+.site-footer a {
+  color: var(--accent-dark);
+  font-weight: 800;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+.github-link {
+  display: inline-flex;
+  margin-top: 16px;
+}
+
 .panel {
   padding: 32px;
   border-radius: 32px;
@@ -426,6 +460,20 @@ input[type="file"] {
   line-height: 1.7;
 }
 
+.site-footer {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding: 0 8px;
+  color: var(--muted);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
 @media (max-width: 960px) {
   .hero,
   .steps,
@@ -436,6 +484,11 @@ input[type="file"] {
 
   .panel-heading {
     align-items: start;
+  }
+
+  .site-footer {
+    display: grid;
+    justify-content: start;
   }
 
   .hero h1 {

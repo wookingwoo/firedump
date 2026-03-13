@@ -1,5 +1,7 @@
 import { BackupForm } from "@/components/backup-form";
 
+const githubRepositoryUrl = "https://github.com/wookingwoo/firedump";
+
 const features = [
   "Upload or paste your service account and export in one shot.",
   "Target a top-level collection or a nested path like teams/acme/members.",
@@ -51,6 +53,22 @@ export default function Home() {
             <span>Deployment</span>
             <strong>Vercel-ready</strong>
           </div>
+          <div className="github-callout">
+            <p className="eyebrow">GitHub</p>
+            <h2>Follow the product in public.</h2>
+            <p>
+              Review the source, share the repository, and keep the project link
+              close at hand while you operate FireDump.
+            </p>
+            <a
+              className="github-link"
+              href={githubRepositoryUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              github.com/wookingwoo/firedump
+            </a>
+          </div>
         </div>
       </section>
 
@@ -77,6 +95,13 @@ export default function Home() {
           </article>
         ))}
       </section>
+
+      <footer className="site-footer">
+        <p>FireDump is available as a public repository on GitHub.</p>
+        <a href={githubRepositoryUrl} target="_blank" rel="noreferrer">
+          View the repository
+        </a>
+      </footer>
     </main>
   );
 }
