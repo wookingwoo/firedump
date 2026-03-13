@@ -1,7 +1,7 @@
 import { BackupForm } from "@/components/backup-form";
 
 const features = [
-  "Paste your service account and export in one shot.",
+  "Upload or paste your service account and export in one shot.",
   "Target a top-level collection or a nested path like teams/acme/members.",
   "Receive a clean JSON file immediately with no server-side credential storage.",
 ];
@@ -9,7 +9,7 @@ const features = [
 const steps = [
   {
     title: "Connect",
-    body: "Drop in a Firebase service account JSON and your Firebase project ID.",
+    body: "Upload a Firebase service account JSON, or paste it directly with your Firebase project ID.",
   },
   {
     title: "Choose scope",

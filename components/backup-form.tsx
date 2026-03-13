@@ -17,12 +17,13 @@ const credentialSteps = [
   "Open Firebase Console and select your project.",
   "Go to Project settings and open the Service accounts tab.",
   'Click "Generate new private key" and confirm the download.',
-  "Open the downloaded JSON file and paste the full contents here.",
+  "Upload the downloaded JSON file here, or paste the full contents manually.",
 ];
 
 export function BackupForm() {
   const [status, setStatus] = useState<Status>(initialStatus);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
   const dialogRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -52,15 +53,36 @@ export function BackupForm() {
     setIsGuideOpen(false);
   }
 
+  async function readServiceAccountJson(formData: FormData) {
+    const pastedJson = formData.get("serviceAccountJson");
+    const uploadedFile = formData.get("serviceAccountFile");
+
+    if (uploadedFile instanceof File && uploadedFile.size > 0) {
+      return uploadedFile.text();
+    }
+
+    return typeof pastedJson === "string" ? pastedJson.trim() : "";
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus({ type: "loading", message: "Exporting Firestore data..." });
 
     const formData = new FormData(event.currentTarget);
+    const serviceAccountJson = await readServiceAccountJson(formData);
+
+    if (!serviceAccountJson) {
+      setStatus({
+        type: "error",
+        message: "Upload a service account JSON file or paste the JSON contents.",
+      });
+      return;
+    }
+
     const payload = {
       projectId: formData.get("projectId"),
       collectionPath: formData.get("collectionPath"),
-      serviceAccountJson: formData.get("serviceAccountJson"),
+      serviceAccountJson,
     };
 
     try {
@@ -143,12 +165,30 @@ export function BackupForm() {
             ?
           </button>
         </span>
+        <input
+          name="serviceAccountFile"
+          type="file"
+          accept=".json,application/json"
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            setSelectedFileName(file?.name ?? "");
+          }}
+        />
+        <p className="field-help">
+          Upload the downloaded service account file. If a file is selected, it will
+          be used instead of the text box below.
+        </p>
+        {selectedFileName ? (
+          <p className="field-help field-help-strong">Selected: {selectedFileName}</p>
+        ) : null}
         <textarea
           name="serviceAccountJson"
           rows={12}
           placeholder='{"type":"service_account","project_id":"my-firestore-project",...}'
-          required
         />
+        <p className="field-help">
+          Optional fallback if you prefer to paste the JSON manually.
+        </p>
       </label>
 
       <button

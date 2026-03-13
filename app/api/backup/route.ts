@@ -30,11 +30,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const serviceAccount = JSON.parse(serviceAccountJson) as {
+    let serviceAccount: {
       client_email?: string;
       private_key?: string;
       project_id?: string;
     };
+
+    try {
+      serviceAccount = JSON.parse(serviceAccountJson) as {
+        client_email?: string;
+        private_key?: string;
+        project_id?: string;
+      };
+    } catch {
+      return NextResponse.json(
+        { error: "The service account JSON must be valid JSON." },
+        { status: 400 },
+      );
+    }
 
     if (!serviceAccount.client_email || !serviceAccount.private_key) {
       return NextResponse.json(
