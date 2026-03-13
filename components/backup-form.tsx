@@ -55,7 +55,8 @@ export function BackupForm() {
   }
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
+    const input = event.currentTarget;
+    const file = input.files?.[0];
     setSelectedFileName(file?.name ?? "");
 
     if (!file) {
@@ -74,6 +75,8 @@ export function BackupForm() {
         type: "error",
         message: "Could not read the selected file.",
       });
+    } finally {
+      input.value = "";
     }
   }
 
