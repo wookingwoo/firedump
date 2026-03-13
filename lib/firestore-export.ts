@@ -19,6 +19,7 @@ type ExportedDocument = {
   id: string;
   path: string;
   data: Record<string, SerializedValue>;
+  exists?: boolean;
   subcollections?: Record<string, ExportedDocument[]>;
 };
 
@@ -76,24 +77,42 @@ function serializeValue(value: unknown): SerializedValue {
   return String(value);
 }
 
+async function exportCollection(
+  collection: FirebaseFirestore.CollectionReference<DocumentData>,
+): Promise<ExportedDocument[]> {
+  const documentRefs = await collection.listDocuments();
+
+  documentRefs.sort((left, right) => left.path.localeCompare(right.path));
+
+  return Promise.all(documentRefs.map((docRef) => exportDocument(docRef)));
+}
+
 async function exportDocument(
-  doc: FirebaseFirestore.QueryDocumentSnapshot<DocumentData>,
+  docRef: FirebaseFirestore.DocumentReference<DocumentData>,
 ): Promise<ExportedDocument> {
-  const collections = await doc.ref.listCollections();
+  const [snapshot, collections] = await Promise.all([
+    docRef.get(),
+    docRef.listCollections(),
+  ]);
   const subcollections: Record<string, ExportedDocument[]> = {};
 
+  collections.sort((left, right) => left.path.localeCompare(right.path));
+
   for (const collection of collections) {
-    const snapshot = await collection.get();
-    subcollections[collection.id] = await Promise.all(
-      snapshot.docs.map((childDoc) => exportDocument(childDoc)),
-    );
+    subcollections[collection.id] = await exportCollection(collection);
   }
 
   const exported: ExportedDocument = {
-    id: doc.id,
-    path: doc.ref.path,
-    data: serializeValue(doc.data()) as Record<string, SerializedValue>,
+    id: docRef.id,
+    path: docRef.path,
+    data: snapshot.exists
+      ? (serializeValue(snapshot.data() ?? {}) as Record<string, SerializedValue>)
+      : {},
   };
+
+  if (!snapshot.exists) {
+    exported.exists = false;
+  }
 
   if (Object.keys(subcollections).length > 0) {
     exported.subcollections = subcollections;
@@ -111,10 +130,8 @@ export async function exportCollectionAsJson(options: {
 
   try {
     const firestore = getFirestore(app);
-    const snapshot = await firestore.collection(options.collectionPath).get();
-
-    const documents = await Promise.all(
-      snapshot.docs.map((doc) => exportDocument(doc)),
+    const documents = await exportCollection(
+      firestore.collection(options.collectionPath),
     );
 
     return {
