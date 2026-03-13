@@ -152,7 +152,7 @@ textarea {
   display: flex;
   gap: 24px;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   margin-bottom: 28px;
 }
 
@@ -177,6 +177,39 @@ textarea {
   font-weight: 700;
 }
 
+.field-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.help-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(35, 24, 11, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--accent-dark);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(86, 53, 16, 0.08);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.help-trigger:hover,
+.help-trigger:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(211, 74, 36, 0.32);
+  background: rgba(255, 250, 240, 0.98);
+}
+
 .backup-form input,
 .backup-form textarea {
   width: 100%;
@@ -194,7 +227,7 @@ textarea {
   border-color: var(--accent);
 }
 
-.backup-form button {
+.submit-button {
   width: fit-content;
   min-width: 220px;
   border: 0;
@@ -211,11 +244,11 @@ textarea {
   box-shadow: 0 16px 40px rgba(211, 74, 36, 0.26);
 }
 
-.backup-form button:hover {
+.submit-button:hover {
   transform: translateY(-1px);
 }
 
-.backup-form button:disabled {
+.submit-button:disabled {
   cursor: wait;
   opacity: 0.72;
   transform: none;
@@ -232,6 +265,98 @@ textarea {
 
 .status-success {
   color: var(--success);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(35, 24, 11, 0.38);
+  backdrop-filter: blur(10px);
+}
+
+.guide-modal {
+  width: min(720px, 100%);
+  padding: 28px;
+  border-radius: 32px;
+  border: 1px solid rgba(35, 24, 11, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 248, 236, 0.98)),
+    var(--surface-strong);
+  box-shadow: 0 28px 80px rgba(35, 24, 11, 0.22);
+}
+
+.guide-modal-header {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.modal-close {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(35, 24, 11, 0.08);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus-visible {
+  background: rgba(35, 24, 11, 0.12);
+}
+
+.guide-modal h3 {
+  margin: 0 0 16px;
+  font-size: 1.7rem;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.guide-list {
+  margin: 0 0 20px;
+  padding-left: 20px;
+  color: var(--muted);
+  display: grid;
+  gap: 12px;
+  line-height: 1.65;
+}
+
+.guide-note {
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(35, 24, 11, 0.08);
+}
+
+.guide-note + .guide-note {
+  margin-top: 12px;
+}
+
+.guide-note strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+}
+
+.guide-note p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.guide-note-warning {
+  background: rgba(211, 74, 36, 0.08);
+  border-color: rgba(211, 74, 36, 0.16);
 }
 
 .steps {
@@ -294,12 +419,14 @@ textarea {
   .hero-copy,
   .hero-card,
   .panel,
-  .step-card {
+  .step-card,
+  .guide-modal {
     border-radius: 24px;
   }
 
   .hero-copy,
-  .panel {
+  .panel,
+  .guide-modal {
     padding: 22px;
   }
 
@@ -308,7 +435,16 @@ textarea {
     font-size: clamp(2.4rem, 14vw, 3.7rem);
   }
 
-  .backup-form button {
+  .submit-button {
+    width: 100%;
+  }
+
+  .guide-modal-header {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .modal-close {
     width: 100%;
   }
 }
