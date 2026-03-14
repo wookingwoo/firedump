@@ -2,6 +2,10 @@
 
 FireDump is a Vercel-friendly Next.js app that exports a Firestore collection into a downloadable JSON file.
 
+## Screenshot
+
+![FireDump service screenshot](docs/images/firedump-service-screenshot.png)
+
 ## Features
 
 - English-first landing page for the FireDump MVP
